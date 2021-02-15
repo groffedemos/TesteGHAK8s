@@ -1,0 +1,78 @@
+name: Docker CLI + Azure Container Registry + Azure Kubernetes Service + Variables + Secrets
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  AZURECR_REGISTRY: groffegithubactions.azurecr.io
+  IMAGEM_AZURECR: ${{ env.AZURECR_REGISTRY }}/sitereposk8s-anp
+  PATH_PROJETO: ./SiteConsultaRepos
+  AZURE_RESOURCE_GROUP_K8S: TesteKubernetes
+  AZURE_CLUSTER_K8S: AKSCluster
+  NAMESPACE_K8S: aula2-githubactions
+  DEPLOYMENT_K8S: sitecontagemk8s
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Exibir nome da imagem
+      run: echo {{ env.IMAGEM_AZURECR }}
+   
+    - name: Login no Azure Container Registry
+      uses: docker/login-action@v1.8.0
+      with:
+        registry: ${{ env.AZURECR_REGISTRY }}
+        username: ${{ secrets.AZURECR_USERNAME }}
+        password: ${{ secrets.AZURECR_PASSWORD }}
+
+    - name: Build e Push no Azure Container Registry
+      run: |
+        cd ${{ env.PATH_PROJETO }}
+        docker build . --file Dockerfile --tag ${{ env.IMAGEM_AZURECR }}:latest
+        docker tag ${{ env.IMAGEM_AZURECR }}:latest ${{ env.IMAGEM_AZURECR }}:$GITHUB_RUN_NUMBER
+        docker push ${{ env.IMAGEM_AZURECR }}
+
+  deployment:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Azure Kubernetes Service - set context - Conectando ao cluster
+      uses: Azure/aks-set-context@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }} 
+        resource-group: ${{ env.AZURE_RESOURCE_GROUP_K8S }}
+        cluster-name:  ${{ env.AZURE_CLUSTER_K8S }}
+
+    - name: Azure Kubernetes Service - Criando Secret para acesso ao Container Registry
+      uses: Azure/k8s-create-secret@v1.1
+      with:
+        namespace: ${{ env.NAMESPACE_K8S }}
+        container-registry-url: ${{ env.AZURECR_REGISTRY }}
+        container-registry-username: ${{ secrets.AZURECR_USERNAME }}
+        container-registry-password: ${{ secrets.AZURECR_PASSWORD }}
+        secret-name: webapp-k8s-secret
+
+    #- name: kubectl - Exibindo a versão
+    #  run: kubectl version
+
+    #- name: kubectl - Removendo o Deployment caso exista
+    #  run: kubectl delete deployment --ignore-not-found ${{ env.DEPLOYMENT_K8S }} -n ${{ env.NAMESPACE_K8S }}
+
+    - name: Azure Kubernetes Service - Deployment de Web App
+      uses: Azure/k8s-deploy@v1.2
+      with:
+        namespace: ${{ env.NAMESPACE_K8S }}
+        manifests: |
+          manifests/deployment.yml
+          manifests/service.yml
+        images: |
+          '${{ env.IMAGEM_AZURECR }}:${{ github.run_number }}'
+        imagepullsecrets: |
+          webapp-k8s-secret
