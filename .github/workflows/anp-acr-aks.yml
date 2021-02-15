@@ -1,4 +1,4 @@
-name: Docker CLI + Azure Container Registry + Azure Kubernetes Service + Variables + Secrets
+name: Docker CLI + Azure Container Registry + Azure Kubernetes Service + Variables + Secrets...
 
 on:
   push:
