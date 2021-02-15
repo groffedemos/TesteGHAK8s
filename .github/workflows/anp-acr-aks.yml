@@ -1,4 +1,4 @@
-name: Docker CLI + Azure Container Registry + Azure Kubernetes Service + Variables + Secrets...
+name: GitHubActions + AKS
 
 on:
   push:
@@ -63,11 +63,6 @@ jobs:
         container-registry-password: ${{ secrets.AZURECR_PASSWORD }}
         secret-name: webapp-k8s-secret
 
-    #- name: kubectl - Exibindo a versão
-    #  run: kubectl version
-
-    #- name: kubectl - Removendo o Deployment caso exista
-    #  run: kubectl delete deployment --ignore-not-found ${{ env.DEPLOYMENT_K8S }} -n ${{ env.NAMESPACE_K8S }}
     - name: Configurar manifesto de Deployment
       run: |
         sed -i 's/CR-DEPLOYMENT/${{ secrets.AZURECR_REGISTRY }}/' ./manifests/deployment.yml
@@ -78,7 +73,6 @@ jobs:
       uses: Azure/k8s-deploy@v1.3
       with:
         namespace: ${{ env.NAMESPACE_K8S }}
-        force: true
         manifests: |
           manifests/deployment.yml
           manifests/service.yml
