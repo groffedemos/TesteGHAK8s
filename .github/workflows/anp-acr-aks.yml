@@ -8,7 +8,7 @@ on:
 
 env:
   AZURECR_REGISTRY: groffegithubactions.azurecr.io
-  IMAGEM_AZURECR: $AZURECR_REGISTRY'/sitereposk8s-anp'
+  IMAGEM_AZURECR: $AZURECR_REGISTRY + '/sitereposk8s-anp'
   PATH_PROJETO: ./SiteConsultaRepos
   AZURE_RESOURCE_GROUP_K8S: TesteKubernetes
   AZURE_CLUSTER_K8S: AKSCluster
