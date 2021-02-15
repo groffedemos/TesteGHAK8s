@@ -78,7 +78,7 @@ jobs:
           manifests/deployment.yml
           manifests/service.yml
         images: |
-          '${{ env.IMAGEM_AZURECR }}:${{ github.run_number }}'
+          'groffegithubactions.azurecr.io/sitereposk8s-anp:${{ github.run_number }}'
         imagepullsecrets: |
           webapp-k8s-secret
 
