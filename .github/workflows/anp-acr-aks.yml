@@ -7,8 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  AZURECR_REGISTRY: groffegithubactions.azurecr.io
-  IMAGEM_AZURECR: '${ env.IMAGEM_AZURECR }/sitereposk8s-anp'
+  IMAGEM_AZURECR: ${{ secrets.IMAGEM_AZURECR }}/sitereposk8s-anp
   PATH_PROJETO: ./SiteConsultaRepos
   AZURE_RESOURCE_GROUP_K8S: TesteKubernetes
   AZURE_CLUSTER_K8S: AKSCluster
@@ -29,7 +28,7 @@ jobs:
     - name: Login no Azure Container Registry
       uses: docker/login-action@v1.8.0
       with:
-        registry: ${{ env.AZURECR_REGISTRY }}
+        registry: ${{ secrets.AZURECR_REGISTRY }}
         username: ${{ secrets.AZURECR_USERNAME }}
         password: ${{ secrets.AZURECR_PASSWORD }}
 
@@ -57,7 +56,7 @@ jobs:
       uses: Azure/k8s-create-secret@v1.1
       with:
         namespace: ${{ env.NAMESPACE_K8S }}
-        container-registry-url: ${{ env.AZURECR_REGISTRY }}
+        container-registry-url: ${{ secrets.AZURECR_REGISTRY }}
         container-registry-username: ${{ secrets.AZURECR_USERNAME }}
         container-registry-password: ${{ secrets.AZURECR_PASSWORD }}
         secret-name: webapp-k8s-secret
