@@ -63,11 +63,10 @@ jobs:
         container-registry-password: ${{ secrets.AZURECR_PASSWORD }}
         secret-name: webapp-k8s-secret
 
-    #- name: Configurar manifesto de Deployment
-    #  run: |
-    #    sed -i 's/CR-DEPLOYMENT/${{ secrets.AZURECR_REGISTRY }}/' ./manifests/deployment.yml
-    #    sed -i 's/IMAGE-DEPLOYMENT/sitereposk8s-anp/' ./manifests/deployment.yml
-    #    sed -i 's/TAG-DEPLOYMENT/${{ github.run_number }}/' ./manifests/deployment.yml
+    - name: Configurar manifesto de Deployment
+      run: |
+        sed -i 's/CR-DEPLOYMENT/${{ secrets.AZURECR_REGISTRY }}/' ./manifests/deployment.yml
+        sed -i 's/TAG-DEPLOYMENT/${{ github.run_number }}/' ./manifests/deployment.yml
 
     - name: Azure Kubernetes Service - Deployment de Web App
       uses: Azure/k8s-deploy@v1.3
