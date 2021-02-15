@@ -69,7 +69,10 @@ jobs:
     #- name: kubectl - Removendo o Deployment caso exista
     #  run: kubectl delete deployment --ignore-not-found ${{ env.DEPLOYMENT_K8S }} -n ${{ env.NAMESPACE_K8S }}
     - name: Configurar manifesto de Deployment
-      run: sed -i 's/IMAGE-DEPLOYMENT/${{ env.IMAGEM_AZURECR }}:${{ github.run_number }}/' ./manifests/deployment.yml
+      run: |
+        sed -i 's/CR-DEPLOYMENT/${{ secrets.AZURECR_REGISTRY }}/' ./manifests/deployment.yml
+        sed -i 's/IMAGE-DEPLOYMENT/sitereposk8s-anp/' ./manifests/deployment.yml
+        sed -i 's/TAG-DEPLOYMENT/${{ github.run_number }}/' ./manifests/deployment.yml
 
     - name: Azure Kubernetes Service - Deployment de Web App
       uses: Azure/k8s-deploy@v1.3
