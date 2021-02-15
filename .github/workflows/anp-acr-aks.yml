@@ -11,7 +11,7 @@ env:
   PATH_PROJETO: ./SiteConsultaRepos
   AZURE_RESOURCE_GROUP_K8S: TesteKubernetes
   AZURE_CLUSTER_K8S: AKSCluster
-  NAMESPACE_K8S: aula2-githubactions
+  NAMESPACE_K8S: anp-treinamento
   DEPLOYMENT_K8S: sitecontagemk8s
 
 jobs:
