@@ -73,6 +73,7 @@ jobs:
       uses: Azure/k8s-deploy@v1.3
       with:
         namespace: ${{ env.NAMESPACE_K8S }}
+        force: true
         manifests: |
           manifests/deployment.yml
           manifests/service.yml
@@ -80,3 +81,6 @@ jobs:
           '${{ env.IMAGEM_AZURECR }}:${{ github.run_number }}'
         imagepullsecrets: |
           webapp-k8s-secret
+
+
+
