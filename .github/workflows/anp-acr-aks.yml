@@ -68,6 +68,8 @@ jobs:
 
     #- name: kubectl - Removendo o Deployment caso exista
     #  run: kubectl delete deployment --ignore-not-found ${{ env.DEPLOYMENT_K8S }} -n ${{ env.NAMESPACE_K8S }}
+    - name: Configurar manifesto de Deployment
+      run: sed -i 's/IMAGE-DEPLOYMENT/${{ env.IMAGEM_AZURECR }}:${{ github.run_number }}/' ./manifests/deployment.yml
 
     - name: Azure Kubernetes Service - Deployment de Web App
       uses: Azure/k8s-deploy@v1.3
@@ -78,9 +80,6 @@ jobs:
           manifests/deployment.yml
           manifests/service.yml
         images: |
-          'groffegithubactions.azurecr.io/sitereposk8s-anp:${{ github.run_number }}'
+          '${{ env.IMAGEM_AZURECR }}:${{ github.run_number }}'
         imagepullsecrets: |
           webapp-k8s-secret
-
-
-
