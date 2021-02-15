@@ -15,5 +15,8 @@ spec:
       containers:
         - name: sitereposk8s
           image: CR-DEPLOYMENT/sitereposk8s-anp:TAG-DEPLOYMENT
+          env:
+            - name: UrlConsultaGitHub
+              value: https://api.github.com/users/azurenapratica/repos?per_page=7
           ports:
           - containerPort: 80
