@@ -18,5 +18,10 @@ spec:
           env:
             - name: UrlConsultaGitHub
               value: https://api.github.com/users/azurenapratica/repos?per_page=7
+            - name: ApplicationInsights__InstrumentationKey
+              valueFrom:
+                configMapKeyRef:
+                  name: sitereposk8s-configmap
+                  key: ApplicationInsightsSiteRepos
           ports:
           - containerPort: 80
